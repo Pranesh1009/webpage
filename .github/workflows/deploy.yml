@@ -3,7 +3,7 @@ name: Deploy Vite App to GitHub Pages
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: ["main"]
+    branches: ["master"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -40,19 +40,21 @@ jobs:
       - name: Build Vite app
         run: npm run build
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist  # Path to the build directory (Vite outputs to dist by default)
-
   # Deployment job
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: https://Pranesh1009.github.io/webpage/  # Replace with your GitHub username and repo name
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Important for deploying to gh-pages
+
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist  # Path to the build directory (Vite outputs to dist by default)
