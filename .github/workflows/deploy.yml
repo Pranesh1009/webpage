@@ -21,29 +21,25 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Build job
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Set up Node.js for building the Vite project
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '16'  # Use the Node.js version required by your Vite project
-
+      # Set the working directory where your package.json is located
       - name: Install dependencies
         run: npm install
+        working-directory: ./webpage  # Change to the correct path where package.json is located
 
       - name: Build Vite app
         run: npm run build
+        working-directory: ./webpage  # Same here for building the app
 
-      - name: Upload artifact
+      - name: Upload build artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist  # Path to the build directory (Vite outputs to dist by default)
+          path: ./webpage/dist  # Adjust the path to the correct dist folder location
 
   # Deployment job
   deploy:
